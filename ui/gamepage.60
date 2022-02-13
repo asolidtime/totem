@@ -1,0 +1,50 @@
+import { Button, GroupBox, StandardListView, CheckBox } from "sixtyfps_widgets.60";
+
+export GamePage := GridLayout {
+    property<[StandardListViewItem]> gameList: [];
+    property<int> selectedGame: -1;
+    callback playButtonClicked;
+    callback plusButtonClicked;
+    property<bool> willRunInTerminal;
+    StandardListView {
+        model: gameList;
+        row: 0;
+        current-item <=> root.selectedGame;
+        Button {
+            x: parent.width - 50px;
+            y: parent.height - 50px;
+            width: 40px;
+            height: 40px;
+            text: "+";
+            clicked => {
+                root.plusButtonClicked();
+            }
+        }
+    }
+    HorizontalLayout {  
+        alignment: space-between;
+        row: 1;
+
+        CheckBox { 
+            width: root.width / 3;
+            height: 25px;
+            text: "Run in terminal";
+            checked <=> root.willRunInTerminal;
+        }
+        // Button {
+        //     height: 25px;
+        //     text: "Settings";
+        // }
+    }
+    HorizontalLayout { 
+        row: 2;
+        Button {
+            height: 30px;
+            text: "Play";
+            clicked => {
+                root.playButtonClicked();
+            }
+        }
+
+    }
+}

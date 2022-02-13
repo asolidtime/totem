@@ -1,0 +1,37 @@
+import {Button} from "./sixtyfps_widgets.60";
+
+export DownloadPage := VerticalLayout {
+    callback backButtonClicked;
+    //property<image> backButtonImage: @image-url("./icons/arrow-left.svg");
+    Button {
+        text: "‹"; // todo: this is ugly and bad
+        height: 25px;
+        width: 32px;
+        x: -10px;
+        clicked => {
+            root.backButtonClicked();
+        }
+    }
+    GridLayout {
+        Row {
+            Text {
+                text: "Add game...";
+                height: 30px;
+            }
+        }
+        Row {
+            Button {
+                height: 25px;
+                text: "from disk...";
+            }
+            Button {
+                height: 25px;
+                text: "from tracker...";
+            }
+            Button {
+                height: 25px;
+                text: "from magnet...";
+            }
+        }
+    }
+}

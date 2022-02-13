@@ -1,0 +1,22 @@
+{
+  "name": "totem",
+  "version": "1.0.0",
+  "description": "epic game launcher",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "bin": {
+	"canteen": "./index.js"
+  },
+  "pkg": {
+  	"assets": "ui/main.60"
+  },
+  "author": "ray",
+  "license": "MIT",
+  "dependencies": {
+    "path": "^0.12.7",
+    "sixtyfps": "^0.1.6"
+  }
+}
