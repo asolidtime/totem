@@ -43,7 +43,7 @@ if (isFirstRun) {
                 setupWindow.gameScanPath = execSync(beautifulLinuxFileDialogCommand, {'cwd':process.env.HOME});
             }
         } catch (error) {
-            // it's not a directory.
+            // it's probably not a directory.
         }
     });
     setupWindow.writeOutConfig.setHandler(() => {
@@ -66,17 +66,40 @@ function scanAndAddGames(gameScanDir) {
     var files = fs.readdirSync(gameScanDir);
     console.log(gameScanDir);
     console.log(files);
-    files.forEach(file => {
-        try {
-            var gameFolder = fs.readdirSync(gameScanDir + "/" + file.toString());
-            if (gameFolder.includes("start.sh")) { 
-                var startScript = gameScanDir + "/" + file.toString() + "/start.sh"
-                gameList.push({gameStartScript: startScript, gameName: file.toString().replace(/\./g, " ")});
+    if (isLinux) {
+        files.forEach(file => {
+            try {
+                var gameFolder = fs.readdirSync(gameScanDir + "/" + file.toString());
+                if (gameFolder.includes("start.sh")) { 
+                    var startScript = gameScanDir + "/" + file.toString() + "/start.sh"
+                    gameList.push({gameStartScript: startScript, gameName: file.toString().replace(/\./g, " ")});
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
-        }
-    });
+        });
+    } else {
+        files.forEach(file => {
+            try {
+                var gameFolder = fs.readdirSync(gameScanDir + "\\" + file.toString()); 
+                gameFolder.forEach(gameFile => {
+                    var executables = [];
+                    if (gameFile.endsWith(".exe")) {
+                        if (!gameFile.startsWith("unins000") && !gameFile.startsWith("UnityCrashHandler") && !gameFile.startsWith("vcredist")) {
+                            executables.push(gameFile);
+                        }
+                    }
+                    if (executables.length == 1) {
+                        gameList.push({gameStartScript: gameScanDir + "\\" + file.toString() + "\\" + executables[0], gameName: gameFolder.toString().replace(/\./g, " ")});
+                    }
+                });
+
+                
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    }
     console.log(gameList);
 }
 

@@ -13,10 +13,12 @@ let mainWindow = new uiMain.MainWindow();
 
 var finalGameList = [];
 
-gameList.forEach(game => {
-    finalGameList.push({text: game.gameName});
-});
-
+function updateGuiGameList() {
+    gameList.forEach(game => {
+        finalGameList.push({text: game.gameName});
+    });
+}
+updateGuiGameList();
 mainWindow.playButtonClicked.setHandler(
     function() {
         if (mainWindow.selectedGame != -1) {
