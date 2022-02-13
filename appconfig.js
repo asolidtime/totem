@@ -90,7 +90,7 @@ function scanAndAddGames(gameScanDir) {
                         }
                     }
                     if (executables.length == 1) {
-                        gameList.push({gameStartScript: gameScanDir + "\\" + file.toString() + "\\" + executables[0], gameName: gameFolder.toString().replace(/\./g, " ")});
+                        gameList.push({gameStartScript: gameScanDir + "\\" + file.toString() + "\\" + executables[0], gameName: file.toString().replace(/\./g, " ")});
                     }
                 });
 
