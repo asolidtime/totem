@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require('fs');
-const gameDir = "/home/maxwell/Games/johncena141/";
 const terminalRunCommand = "foot %command%";
 const { exec } = require("child_process");
 
@@ -11,8 +10,6 @@ let appConfig = require("./appconfig.js");
 var gameList = appConfig.gameList;
 
 let mainWindow = new uiMain.MainWindow();
-
-var files = fs.readdirSync(gameDir);
 
 var finalGameList = [];
 
