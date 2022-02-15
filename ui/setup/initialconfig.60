@@ -6,10 +6,12 @@ export SetupWindow := Window {
     property <int> selectedTheme: 0; // 1 - light, 2 - dark, 3 - system
     property <string> gameScanPath: "";
     property <string> selectedThemeText: "";
-    property<[StandardListViewItem]> foundGameList: [];
+    property <[StandardListViewItem]> foundGameList: [];
+    callback addGames(int);
     callback openFileDialog;
     callback finish;
     callback writeOutConfig;
+    callback scanFolder;
     title: "Totem Setup";
     min-height: 400px;
     min-width: 600px;
@@ -40,27 +42,25 @@ export SetupWindow := Window {
             x: parent.width / 2 - width / 2;
             y: parent.height * 0.1;
             horizontal-alignment: center;
-            text: isLinux ? "Next, choose a folder to auto-search for games.\nGames will be added automagically if their root folder contains a start.sh file." : "Next, choose a folder to auto-search for games.\nGames will be added automagically if their root folder contains only one .exe file.";
-        }
-        windowsText := Text {
-            x: parent.width / 2 - width / 2;
-            y: parent.height * 0.1 + height * 2;
-            visible: !isLinux;
-            text: "(This excludes unins*.exe, UnityCrashHandler*.exe, and vcredist*.exe)";
+            text: foundGameList.length == 0 ? "Next, choose a folder to auto-search for games.\nPress the scan button to scan the folder for games." : "Select a game and press the 'add' button to add a game.";
         }
         scanDirEntryBox := LineEdit {
             x: parent.width / 2 - width / 2;
-            y: isLinux ? parent.height * 0.25 : parent.height * 0.25 + windowsText.height;
+            y: parent.height * 0.25;
             width: parent.width * 0.8;
             height: 35px;
             text <=> root.gameScanPath;
-            Button {
+            browseButton := Button {
                 x: parent.width - width;
                 height: parent.height;
                 width: 80px;
-                text: "Browse!";
+                text: scanDirEntryBox.text == "" ? "Browse!" : "Scan!";
                 clicked => {
-                    root.openFileDialog();
+                    if (scanDirEntryBox.text == "") {
+                        root.openFileDialog();
+                    } else {
+                        root.scanFolder();
+                    }
                 }
             }
         }
@@ -81,6 +81,17 @@ export SetupWindow := Window {
             height: parent.height - (scanDirEntryBox.height + y);
             y: scanDirEntryBox.y + scanDirEntryBox.height + 10px;
             model: foundGameList;
+            visible: foundGameList.length != 0;
+            Button {
+                x: parent.x;
+                y: parent.height;
+                width: parent.width;
+                height: 25px;
+                text: foundGameListView.current-item == -1 ? "Add all of these" : "Add " + foundGameList[parent.current-item].text;
+                clicked => {
+                    addGames(parent.current-item);
+                }
+            }
         }
         
     }

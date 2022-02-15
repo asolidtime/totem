@@ -32,9 +32,43 @@ function writeOutConfig() {
 }
 
 if (isFirstRun) {
+    var currentFoundGames = [];
+    var currentGameList = [];
     let sixtyfps = require("sixtyfps");
     let ui_setup = require("./ui/setup/initialconfig.60");
     let setupWindow = ui_setup.SetupWindow();
+    setupWindow.addGames.setHandler((gameIndex) => {
+        if (gameIndex == -1) {
+            currentGameList.forEach(game => {
+                gameList.push(game);
+                console.log(`adding ${game.gameName} @ ${game.gameStartScript}`);
+            });
+            currentGameList = [];
+            setupWindow.foundGameList = [];
+        } else {
+            gameList.push(currentGameList[gameIndex]);
+            console.log(`adding ${currentGameList[gameIndex].gameName} @ ${currentGameList[gameIndex].gameStartScript}`);
+        }
+    });
+    setupWindow.scanFolder.setHandler(() => {
+        try {
+            const gameScanPath = setupWindow.gameScanPath.trim();
+            if (gameScanPath != "") {
+                currentGameList = scanGames(gameScanPath);
+                var guiGameList = [];
+                currentGameList.forEach(game => {
+                    if (!currentFoundGames.includes(game)) {
+                        guiGameList.push({text: `${game.gameName} @ ${game.gameStartScript}`});
+                    } else {
+                        guiGameList.push({text: `(already added) ${game.gameName} @ ${game.gameStartScript}`});
+                    }
+                });
+                setupWindow.foundGameList = guiGameList;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
     setupWindow.openFileDialog.setHandler(() => {
         try {
             if (!isLinux) {
@@ -42,16 +76,14 @@ if (isFirstRun) {
             } else {
                 setupWindow.gameScanPath = execSync(beautifulLinuxFileDialogCommand, {'cwd':process.env.HOME});
             }
+            setupWindow.scanFolder();
         } catch (error) {
             // it's probably not a directory.
         }
     });
     setupWindow.writeOutConfig.setHandler(() => {
         fs.mkdirSync(appConfigDir);
-        const gameScanPath = setupWindow.gameScanPath.trim();
-        if (gameScanPath != "") {
-            scanAndAddGames(gameScanPath);
-        }
+        
         appTheme = setupWindow.appTheme;
         writeOutConfig();
     });
@@ -62,17 +94,18 @@ if (isFirstRun) {
     setupWindow.run();
 }
 
-function scanAndAddGames(gameScanDir) {
+function scanGames(gameScanDir) {
     var files = fs.readdirSync(gameScanDir);
     console.log(gameScanDir);
     console.log(files);
+    var scanList = [];
     if (isLinux) {
         files.forEach(file => {
             try {
                 var gameFolder = fs.readdirSync(gameScanDir + "/" + file.toString());
                 if (gameFolder.includes("start.sh")) { 
                     var startScript = gameScanDir + "/" + file.toString() + "/start.sh"
-                    gameList.push({gameStartScript: startScript, gameName: file.toString().replace(/\./g, " ")});
+                    scanList.push({gameStartScript: startScript, gameName: file.toString().replace(/\./g, " ")});
                 }
             } catch (error) {
                 console.log(error);
@@ -90,7 +123,7 @@ function scanAndAddGames(gameScanDir) {
                         }
                     }
                     if (executables.length == 1) {
-                        gameList.push({gameStartScript: gameScanDir + "\\" + file.toString() + "\\" + executables[0], gameName: file.toString().replace(/\./g, " ")});
+                        scanList.push({gameStartScript: gameScanDir + "\\" + file.toString() + "\\" + executables[0], gameName: file.toString().replace(/\./g, " ")});
                     }
                 });
 
@@ -100,7 +133,7 @@ function scanAndAddGames(gameScanDir) {
             }
         });
     }
-    console.log(gameList);
+    return(scanList);
 }
 
-module.exports = {appTheme, scanAndAddGames, writeOutConfig, getConfigPart, isLinux, gameList};
+module.exports = {appTheme, scanGames, writeOutConfig, getConfigPart, isLinux, gameList};
