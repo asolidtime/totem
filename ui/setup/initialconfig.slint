@@ -1,4 +1,4 @@
-import {Button, LineEdit, StandardListView} from "./sixtyfps_widgets.60";
+import {Button, LineEdit, StandardListView} from "std-widgets.slint";
 
 export SetupWindow := Window {
     property <int> current-stage: 1;
@@ -9,7 +9,6 @@ export SetupWindow := Window {
     property <[StandardListViewItem]> foundGameList: [];
     callback addGames(int);
     callback openFileDialog;
-    callback finish;
     callback writeOutConfig;
     callback scanFolder;
     title: "Totem Setup";
@@ -22,17 +21,7 @@ export SetupWindow := Window {
             x: parent.width / 2 - width / 2;
             y: parent.height * 0.1;
             horizontal-alignment: center;
-            text: "That's all for now. I hope you enjoy Totem!";
-        }
-        Button {
-            x: parent.width - width;
-            y: parent.height - height;
-            width: 60px;
-            height: 25px;
-            text: "Finish";
-            clicked => {
-                root.finish();
-            }
+            text: "That's all for now. I hope you enjoy Totem! Feel free to close this window.\nOr don't. Your choice.";
         }
     }
     Rectangle {
@@ -78,12 +67,12 @@ export SetupWindow := Window {
         foundGameListView := StandardListView {
             x: scanDirEntryBox.x;
             width: scanDirEntryBox.width;
-            height: parent.height - (scanDirEntryBox.height + y);
+            height: parent.height - (scanDirEntryBox.height + y + 25px);
             y: scanDirEntryBox.y + scanDirEntryBox.height + 10px;
             model: foundGameList;
             visible: foundGameList.length != 0;
             Button {
-                x: parent.x;
+                x: 0px;
                 y: parent.height;
                 width: parent.width;
                 height: 25px;

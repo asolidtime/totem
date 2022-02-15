@@ -3,8 +3,8 @@ const fs = require('fs');
 const terminalRunCommand = "foot %command%";
 const { exec } = require("child_process");
 
-let sixtyfps = require("sixtyfps");
-let uiMain = require("./ui/main.60");
+let slint = require("slint-ui");
+let uiMain = require("./ui/main.slint");
 let appConfig = require("./appconfig.js");
 
 var gameList = appConfig.gameList;

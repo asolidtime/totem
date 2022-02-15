@@ -11,12 +11,12 @@
 	"canteen": "./index.js"
   },
   "pkg": {
-  	"assets": "ui/main.60"
+  	"assets": "ui/main.slint"
   },
   "author": "ray",
   "license": "MIT",
   "dependencies": {
     "path": "^0.12.7",
-    "sixtyfps": "^0.1.6"
+    "slint-ui": "^0.2.0"
   }
 }

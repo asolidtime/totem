@@ -34,8 +34,8 @@ function writeOutConfig() {
 if (isFirstRun) {
     var currentFoundGames = [];
     var currentGameList = [];
-    let sixtyfps = require("sixtyfps");
-    let ui_setup = require("./ui/setup/initialconfig.60");
+    let slint = require("slint-ui");
+    let ui_setup = require("./ui/setup/initialconfig.slint");
     let setupWindow = ui_setup.SetupWindow();
     setupWindow.addGames.setHandler((gameIndex) => {
         if (gameIndex == -1) {
@@ -86,10 +86,6 @@ if (isFirstRun) {
         
         appTheme = setupWindow.appTheme;
         writeOutConfig();
-    });
-    setupWindow.finish.setHandler(() => {
-        
-        exit(0); // todo: just go back to original program
     });
     setupWindow.run();
 }
